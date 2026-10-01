@@ -13,9 +13,13 @@ Tanpa API key AI. Tanpa kartu kredit. Satu perintah untuk deploy.
 ```bash
 ./deploy.sh
 ```
-Script akan: login Cloudflare via browser (OAuth — **tanpa API token,
-tanpa account ID**), buatkan D1 untuk kuota harian, lalu deploy.
-Selesai.
+Fleksibel dua mode (otomatis):
+- **Laptop (ada browser):** login OAuth via browser — **tanpa API token,
+  tanpa account ID.**
+- **VPS/headless:** `export CLOUDFLARE_API_TOKEN=xxxx && ./deploy.sh`
+  (account ID terdeteksi otomatis kalau token cuma pegang 1 akun).
+
+Script akan buatkan D1 untuk kuota harian, lalu deploy. Selesai.
 
 **Opsi B — tombol Deploy di atas:** klik → login → pilih akun → jadi.
 Tanpa D1 (jalan dalam mode quota-lite: burst limiter saja), tapi nol langkah manual.

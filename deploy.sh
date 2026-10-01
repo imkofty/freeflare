@@ -20,12 +20,29 @@ if ! npx --yes wrangler@latest --version >/dev/null 2>&1; then
 fi
 W="npx --yes wrangler@latest"
 
-# 3. login (OAuth via browser — no API token)
-if ! $W whoami >/dev/null 2>&1; then
+# 3. auth — fleksibel: lokal (OAuth via browser, tanpa token) atau VPS/headless (API token)
+#     VPS:  export CLOUDFLARE_API_TOKEN=xxxx && ./deploy.sh
+if [ -n "$CLOUDFLARE_API_TOKEN" ]; then
+  echo "→ Mode headless: pakai CLOUDFLARE_API_TOKEN."
+  if ! $W whoami >/dev/null 2>&1; then echo "Token tidak valid."; exit 1; fi
+  if [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+    ACCTS=$(curl -s -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" "https://api.cloudflare.com/client/v4/accounts?per_page=10")
+    N=$(printf '%s' "$ACCTS" | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{try{console.log(JSON.parse(s).result.length)}catch{console.log(0)}})")
+    if [ "$N" = "1" ]; then
+      export CLOUDFLARE_ACCOUNT_ID=$(printf '%s' "$ACCTS" | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>console.log(JSON.parse(s).result[0].id))")
+      echo "→ Account ID terdeteksi otomatis."
+    elif [ "$N" = "0" ]; then
+      echo "Token tidak punya akses ke akun mana pun."; exit 1
+    else
+      echo "Token punya akses ke $N akun — set CLOUDFLARE_ACCOUNT_ID manual lalu ulangi."
+      exit 1
+    fi
+  fi
+elif ! $W whoami >/dev/null 2>&1; then
   echo "→ Membuka login Cloudflare di browser…"
   $W login
 fi
-echo "→ Login OK: $($W whoami 2>/dev/null | head -1)"
+echo "→ Auth OK: $($W whoami 2>/dev/null | head -1)"
 
 # 4. D1 for durable quotas (idempotent)
 if ! grep -q '\[\[d1_databases\]\]' wrangler.toml; then
