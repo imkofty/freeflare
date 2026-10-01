@@ -1,0 +1,28 @@
+# cf-free-chat — 100% free AI chatbot on Cloudflare (no API keys)
+# Deploy: ./deploy.sh   (one command; OAuth login, no API token needed)
+# D1 binding is injected by deploy.sh. Without it the worker runs in
+# quota-lite mode (Cache API burst limits only) so the Deploy button works too.
+
+name = "cf-free-chat"
+main = "src/worker.js"
+compatibility_date = "2026-10-01"
+
+[assets]
+directory = "./public"
+
+[ai]
+binding = "AI"
+
+[vars]
+APP_NAME = "GratisChat"
+DEFAULT_MODEL = "@cf/meta/llama-3.1-8b-instruct-fp8-fast"
+SYSTEM_PROMPT = "You are a helpful assistant. Reply in the same language the user writes in (Indonesian or English). Be concise but complete."
+MAX_TOKENS = "600"
+MAX_TURNS = "20"
+MAX_MSG_CHARS = "4000"
+BURST_PER_MINUTE = "12"
+DAILY_PER_IP = "60"
+GLOBAL_DAILY_CAP = "700"
+# Optional Turnstile (leave empty to run in quota-only mode):
+# TURNSTILE_SITE_KEY = ""
+# Set via: wrangler secret put TURNSTILE_SECRET

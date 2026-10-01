@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GratisChat — AI gratis, tanpa API key</title>
+<meta name="description" content="Chatbot AI gratis 100% di Cloudflare. Tanpa API key, tanpa kartu kredit.">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<div id="app">
+  <aside id="sidebar">
+    <div class="side-head">
+      <button id="newChat" class="btn-primary">+ <span data-i18n="newChat">Chat baru</span></button>
+      <button id="closeSide" class="icon-btn" aria-label="tutup">✕</button>
+    </div>
+    <div id="convList"></div>
+    <div class="side-foot">
+      <div id="usageMeter" title="">
+        <div class="usage-bar"><div id="usageFill"></div></div>
+        <div id="usageText" class="usage-text"></div>
+      </div>
+      <div class="row">
+        <button id="langToggle" class="chip">ID/EN</button>
+        <button id="exportBtn" class="chip">⤓ MD</button>
+      </div>
+    </div>
+  </aside>
+
+  <main id="main">
+    <header>
+      <button id="openSide" class="icon-btn" aria-label="menu">☰</button>
+      <select id="modelPicker" aria-label="model"></select>
+      <span id="servedBy" class="served"></span>
+    </header>
+    <div id="turnstileBox"></div>
+    <div id="messages"></div>
+    <div id="quotaNote" class="quota-note hidden"></div>
+    <form id="composer">
+      <textarea id="input" rows="1" data-i18n-ph="placeholder" placeholder="Tulis pesan…"></textarea>
+      <button type="submit" id="sendBtn" aria-label="kirim">➤</button>
+    </form>
+  </main>
+</div>
+<script src="/app.js"></script>
+</body>
+</html>
