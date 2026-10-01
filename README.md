@@ -1,6 +1,12 @@
 # GratisChat — 100% free AI chatbot on Cloudflare
 
-> **English** | [Bahasa Indonesia](README.id.md)
+🇬🇧 **English** · [🇮🇩 Indonesia](README.id.md)
+
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-Workers-F68204?logo=cloudflare&logoColor=white)](https://workers.cloudflare.com/)
+[![Node.js](https://img.shields.io/badge/node-%3E%3D18-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
+[![Dependencies](https://img.shields.io/badge/dependencies-0-blue)]
+![Workers AI](https://img.shields.io/badge/AI-Workers_AI-8A2BE2)
 
 A ChatGPT-style web app that runs **entirely on Cloudflare's free tier**.
 No AI API key. No credit card. One command to deploy.
