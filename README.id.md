@@ -1,5 +1,7 @@
 # GratisChat — chatbot AI 100% gratis di Cloudflare
 
+![Banner GratisChat](assets/banner.png)
+
 [🇬🇧 English](README.md) · 🇮🇩 **Indonesia**
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
