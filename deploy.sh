@@ -20,10 +20,34 @@ if ! npx --yes wrangler@latest --version >/dev/null 2>&1; then
 fi
 W="npx --yes wrangler@latest"
 
-# 3. auth — fleksibel: lokal (OAuth via browser, tanpa token) atau VPS/headless (API token)
-#     VPS:  export CLOUDFLARE_API_TOKEN=xxxx && ./deploy.sh
+# 3. auth — user PILIH jalur (interaktif); env var = otomasi/non-interaktif
+#     VPS non-interaktif: export CLOUDFLARE_API_TOKEN=xxxx && ./deploy.sh < /dev/null
+MODE=""
 if [ -n "$CLOUDFLARE_API_TOKEN" ]; then
-  echo "→ Mode headless: pakai CLOUDFLARE_API_TOKEN."
+  MODE=token
+elif [ ! -t 0 ]; then
+  echo "Non-interaktif dan CLOUDFLARE_API_TOKEN belum di-set."
+  echo "Buat token di dash.cloudflare.com → My Profile → API Tokens"
+  echo "(template 'Edit Cloudflare Workers' + izin D1 Edit), lalu:"
+  echo "  export CLOUDFLARE_API_TOKEN=<token> && ./deploy.sh"
+  exit 1
+else
+  echo "Pilih jalur deploy:"
+  echo "  1) Laptop — login via browser, TANPA API token  [default]"
+  echo "  2) VPS/headless — pakai API token"
+  read -r -p "Pilihan [1/2]: " PICK
+  case "$PICK" in 2) MODE=token;; *) MODE=oauth;; esac
+  echo
+fi
+
+if [ "$MODE" = "token" ]; then
+  if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+    echo "Buat token di dash.cloudflare.com → My Profile → API Tokens"
+    echo "(template 'Edit Cloudflare Workers' + izin D1 Edit)."
+    read -r -s -p "Paste API token: " CLOUDFLARE_API_TOKEN; echo
+    export CLOUDFLARE_API_TOKEN
+  fi
+  echo "→ Mode API token."
   if ! $W whoami >/dev/null 2>&1; then echo "Token tidak valid."; exit 1; fi
   if [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
     ACCTS=$(curl -s -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" "https://api.cloudflare.com/client/v4/accounts?per_page=10")
@@ -38,16 +62,11 @@ if [ -n "$CLOUDFLARE_API_TOKEN" ]; then
       exit 1
     fi
   fi
-elif ! $W whoami >/dev/null 2>&1; then
-  if [ ! -t 0 ]; then
-    echo "Headless terdeteksi tapi CLOUDFLARE_API_TOKEN belum di-set."
-    echo "Buat token di dash.cloudflare.com → My Profile → API Tokens"
-    echo "(template 'Edit Cloudflare Workers' + izin D1 Edit), lalu:"
-    echo "  export CLOUDFLARE_API_TOKEN=<token> && ./deploy.sh"
-    exit 1
+else
+  if ! $W whoami >/dev/null 2>&1; then
+    echo "→ Membuka login Cloudflare di browser…"
+    $W login
   fi
-  echo "→ Membuka login Cloudflare di browser…"
-  $W login
 fi
 echo "→ Auth OK: $($W whoami 2>/dev/null | head -1)"
 
