@@ -19,7 +19,11 @@ Tanpa API key AI. Tanpa kartu kredit. Satu perintah untuk deploy.
 
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/imkofty/freeflare)
 
-> Ganti `USERNAME` dengan username GitHub kamu setelah fork.
+> **Tanpa clone, tanpa terminal.** Klik tombol di atas, login Cloudflare,
+> pilih akun — chatbot kamu langsung live. (Tombol deploy melewati D1,
+> jadi jalan dalam mode quota-lite: hanya burst limiter.)
+>
+> Fork dulu kalau mau punya salinan sendiri untuk dimodifikasi.
 
 ## Cara deploy (pilih satu)
 
