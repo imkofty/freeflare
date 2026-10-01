@@ -1,10 +1,10 @@
 #!/bin/bash
-# deploy.sh — one-command deploy cf-free-chat to YOUR Cloudflare account.
+# deploy.sh — one-command deploy freeflare to YOUR Cloudflare account.
 # No API token needed, no account ID needed: auth is OAuth via browser.
 set -e
 cd "$(dirname "$0")"
 
-echo "== cf-free-chat one-click deploy =="
+echo "== freeflare one-click deploy =="
 echo
 
 # 1. node
@@ -73,7 +73,7 @@ echo "→ Auth OK: $($W whoami 2>/dev/null | head -1)"
 # 4. D1 for durable quotas (idempotent)
 if ! grep -q '\[\[d1_databases\]\]' wrangler.toml; then
   echo "→ Creating D1 database for daily quotas…"
-  OUT=$($W d1 create cf-free-chat-quota --json 2>/dev/null || true)
+  OUT=$($W d1 create freeflare-quota --json 2>/dev/null || true)
   DBID=$(echo "$OUT" | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{try{const j=JSON.parse(s);console.log(j.uuid||j.database_id||'')}catch{}})" || true)
   if [ -z "$DBID" ]; then
     echo "D1 creation failed — continuing without D1 (quota-lite mode)."
@@ -82,10 +82,10 @@ if ! grep -q '\[\[d1_databases\]\]' wrangler.toml; then
 
 [[d1_databases]]
 binding = "DB"
-database_name = "cf-free-chat-quota"
+database_name = "freeflare-quota"
 database_id = "$DBID"
 EOF
-    $W d1 execute cf-free-chat-quota --file=./schema.sql --remote >/dev/null
+    $W d1 execute freeflare-quota --file=./schema.sql --remote >/dev/null
     echo "→ D1 ready."
   fi
 else

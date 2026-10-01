@@ -1,4 +1,4 @@
-// cf-free-chat worker — 100% free chatbot on Cloudflare Workers AI.
+// freeflare worker — 100% free chatbot on Cloudflare Workers AI.
 // No API keys needed: inference via the env.AI binding.
 // Abuse protection: Cache API burst limiter + D1 daily ledger (optional) +
 // global circuit breaker + optional Turnstile (graceful degrade when unset).
@@ -42,7 +42,7 @@ const unb64url = (s) => atob(s.replace(/-/g, "+").replace(/_/g, "/"));
 
 async function mintSession(env, ip) {
   const exp = Date.now() + 24 * 3600 * 1000;
-  const secret = env.TURNSTILE_SECRET || env.SESSION_SECRET || "cf-free-chat-dev";
+  const secret = env.TURNSTILE_SECRET || env.SESSION_SECRET || "freeflare-dev";
   const sig = await hmacSign(secret, `${ip}.${exp}`);
   return b64url(`${exp}.${sig}`);
 }
@@ -50,7 +50,7 @@ async function validSession(env, token, ip) {
   try {
     const [exp, sig] = unb64url(token).split(".");
     if (Date.now() > parseInt(exp, 10)) return false;
-    const secret = env.TURNSTILE_SECRET || env.SESSION_SECRET || "cf-free-chat-dev";
+    const secret = env.TURNSTILE_SECRET || env.SESSION_SECRET || "freeflare-dev";
     return timingEq(sig, await hmacSign(secret, `${ip}.${exp}`));
   } catch { return false; }
 }
@@ -133,7 +133,7 @@ export default {
     // ---- public config for the frontend ----
     if (path === "/api/config" && req.method === "GET") {
       return json({
-        appName: env.APP_NAME || "GratisChat",
+        appName: env.APP_NAME || "FreeFlare",
         models: MODELS,
         defaultModel: env.DEFAULT_MODEL || MODELS[0].id,
         turnstileSiteKey: env.TURNSTILE_SITE_KEY || null,

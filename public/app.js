@@ -1,4 +1,4 @@
-// GratisChat frontend — vanilla JS, no build, no deps (except optional Turnstile).
+// FreeFlare frontend — vanilla JS, no build, no deps (except optional Turnstile).
 "use strict";
 
 const I18N = {

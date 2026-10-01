@@ -1,19 +1,23 @@
-# GratisChat — chatbot AI 100% gratis di Cloudflare
+# FreeFlare — chatbot AI 100% gratis di Cloudflare
 
-![Banner GratisChat](assets/banner.png)
+![Banner FreeFlare](assets/banner.png)
 
 [🇬🇧 English](README.md) · 🇮🇩 **Indonesia**
 
-[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-[![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-Workers-F68204?logo=cloudflare&logoColor=white)](https://workers.cloudflare.com/)
-[![Node.js](https://img.shields.io/badge/node-%3E%3D18-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
-[![Dependencies](https://img.shields.io/badge/dependencies-0-blue)]()
-[![Workers AI](https://img.shields.io/badge/AI-Workers_AI-8A2BE2)]()
+[![Stars](https://img.shields.io/github/stars/imkofty/freeflare?style=for-the-badge&logo=github&color=20808D)](https://github.com/imkofty/freeflare/stargazers)
+[![Forks](https://img.shields.io/github/forks/imkofty/freeflare?style=for-the-badge&logo=github&color=4DD0E1)](https://github.com/imkofty/freeflare/network/members)
+[![Issues](https://img.shields.io/github/issues/imkofty/freeflare?style=for-the-badge&logo=github&color=FFB454)](https://github.com/imkofty/freeflare/issues)
+[![License: MIT](https://img.shields.io/github/license/imkofty/freeflare?style=for-the-badge&color=3FB950)](LICENSE)
+
+[![Node.js](https://img.shields.io/badge/node-%3E%3D18-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
+[![Dependencies](https://img.shields.io/badge/dependencies-0-20808D?style=for-the-badge)]()
+[![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-Workers-F68204?style=for-the-badge&logo=cloudflare&logoColor=white)](https://workers.cloudflare.com/)
+[![Workers AI](https://img.shields.io/badge/AI-Workers_AI-8A2BE2?style=for-the-badge)]()
 
 ChatGPT-style web app yang jalan **sepenuhnya di paket gratis Cloudflare**.
 Tanpa API key AI. Tanpa kartu kredit. Satu perintah untuk deploy.
 
-[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/USERNAME/cf-free-chat)
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/imkofty/freeflare)
 
 > Ganti `USERNAME` dengan username GitHub kamu setelah fork.
 

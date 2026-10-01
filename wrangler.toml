@@ -1,9 +1,9 @@
-# cf-free-chat — 100% free AI chatbot on Cloudflare (no API keys)
+# freeflare — 100% free AI chatbot on Cloudflare (no API keys)
 # Deploy: ./deploy.sh   (one command; OAuth login, no API token needed)
 # D1 binding is injected by deploy.sh. Without it the worker runs in
 # quota-lite mode (Cache API burst limits only) so the Deploy button works too.
 
-name = "cf-free-chat"
+name = "freeflare"
 main = "src/worker.js"
 compatibility_date = "2026-10-01"
 
@@ -14,7 +14,7 @@ directory = "./public"
 binding = "AI"
 
 [vars]
-APP_NAME = "GratisChat"
+APP_NAME = "FreeFlare"
 DEFAULT_MODEL = "@cf/meta/llama-3.1-8b-instruct-fp8-fast"
 SYSTEM_PROMPT = "You are a helpful assistant. Reply in the same language the user writes in (Indonesian or English). Be concise but complete."
 MAX_TOKENS = "600"
