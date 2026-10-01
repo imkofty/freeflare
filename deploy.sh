@@ -39,6 +39,13 @@ if [ -n "$CLOUDFLARE_API_TOKEN" ]; then
     fi
   fi
 elif ! $W whoami >/dev/null 2>&1; then
+  if [ ! -t 0 ]; then
+    echo "Headless terdeteksi tapi CLOUDFLARE_API_TOKEN belum di-set."
+    echo "Buat token di dash.cloudflare.com → My Profile → API Tokens"
+    echo "(template 'Edit Cloudflare Workers' + izin D1 Edit), lalu:"
+    echo "  export CLOUDFLARE_API_TOKEN=<token> && ./deploy.sh"
+    exit 1
+  fi
   echo "→ Membuka login Cloudflare di browser…"
   $W login
 fi
