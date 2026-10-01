@@ -1,83 +1,86 @@
-# GratisChat — chatbot AI 100% gratis di Cloudflare
+# GratisChat — 100% free AI chatbot on Cloudflare
 
-ChatGPT-style web app yang jalan **sepenuhnya di paket gratis Cloudflare**.
-Tanpa API key AI. Tanpa kartu kredit. Satu perintah untuk deploy.
+> **English** | [Bahasa Indonesia](README.id.md)
+
+A ChatGPT-style web app that runs **entirely on Cloudflare's free tier**.
+No AI API key. No credit card. One command to deploy.
 
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/USERNAME/cf-free-chat)
 
-> Ganti `USERNAME` dengan username GitHub kamu setelah fork.
+> Replace `USERNAME` with your GitHub username after forking.
 
-## Cara deploy (pilih satu)
+## Deploy (pick one)
 
-**Opsi A — script satu perintah (disarankan, kuota D1 penuh):**
+**Option A — one-command script (recommended, full D1 quotas):**
 ```bash
 ./deploy.sh
 ```
-Fleksibel dua mode (otomatis):
-- **Laptop (ada browser):** login OAuth via browser — **tanpa API token,
-  tanpa account ID.**
+Two modes, chosen interactively at runtime:
+- **Laptop (has a browser):** OAuth login via browser — **no API token,
+  no account ID needed.**
 - **VPS/headless:** `export CLOUDFLARE_API_TOKEN=xxxx && ./deploy.sh`
-  (account ID terdeteksi otomatis kalau token cuma pegang 1 akun).
+  (account ID auto-detected when the token covers exactly one account).
 
-Script akan buatkan D1 untuk kuota harian, lalu deploy. Selesai.
+The script creates a D1 database for daily quotas, then deploys. Done.
 
-**Opsi B — tombol Deploy di atas:** klik → login → pilih akun → jadi.
-Tanpa D1 (jalan dalam mode quota-lite: burst limiter saja), tapi nol langkah manual.
+**Option B — the Deploy button above:** click → log in → pick an account → done.
+No D1 (runs in quota-lite mode: burst limiter only), but zero manual steps.
 
-## Fitur
+## Features
 
-- **Multi-model picker + fallback otomatis** — 7 model Workers AI gratis
+- **Multi-model picker + automatic fallback** — 7 free Workers AI models
   (Llama 3.1 8B, Llama 3.2 3B, Qwen3 30B, GLM 4.7 Flash, Llama 4 Scout,
-  GPT-OSS 20B, Granite 4 Micro). Model utama error → pindah sendiri.
-- **Streaming SSE** — jawaban mengalir token demi token.
-- **Markdown + code block + tombol copy**, mobile-first, dark UI.
-- **Bilingual ID/EN** — toggle di sidebar, otomatis ikut bahasa browser.
-- **Riwayat di localStorage** — tanpa login, tanpa database user.
-- **Export chat ke Markdown** sekali klik.
-- **System prompt per-deployment** — ubah `SYSTEM_PROMPT` di `wrangler.toml`,
-  tanpa sentuh kode (mis. jadi CS toko, tutor, dll).
-- **Anti-abuse berlapis**: burst limiter (Cache API, gratis) + kuota harian
-  per-IP + circuit breaker global (D1) + Turnstile opsional.
-- **Meter pemakaian jujur** — estimasi yang diberi label jelas, bukan angka
-  resmi Cloudflare. Lihat [docs/LIMITS.md](docs/LIMITS.md).
+  GPT-OSS 20B, Granite 4 Micro). If the primary model fails, it switches
+  by itself.
+- **SSE streaming** — answers flow token by token.
+- **Markdown + code blocks + copy button**, mobile-first dark UI.
+- **Bilingual EN/ID** — toggle in the sidebar, auto-detects browser language.
+- **History in localStorage** — no login, no user database.
+- **One-click Markdown export** of any chat.
+- **Per-deployment system prompt** — change `SYSTEM_PROMPT` in
+  `wrangler.toml`, no code touched (e.g. shop assistant, tutor, …).
+- **Layered anti-abuse**: burst limiter (Cache API, free) + daily per-IP
+  quota + global circuit breaker (D1) + optional Turnstile.
+- **Honest usage meter** — a clearly-labelled estimate, not official
+  Cloudflare numbers. See [docs/LIMITS.md](docs/LIMITS.md).
 
-## Konfigurasi (wrangler.toml)
+## Configuration (wrangler.toml)
 
-| Var | Default | Arti |
+| Var | Default | Meaning |
 |---|---|---|
-| `SYSTEM_PROMPT` | helpful assistant | Kepribadian bot |
-| `DEFAULT_MODEL` | Llama 3.1 8B | Model awal |
-| `MAX_TOKENS` | 600 | Panjang jawaban maks |
-| `MAX_TURNS` | 20 | Riwayat yang dikirim ke model |
-| `DAILY_PER_IP` | 60 | Pesan/hari per IP |
-| `GLOBAL_DAILY_CAP` | 700 | Pesan/hari seluruh deployment |
-| `TURNSTILE_SITE_KEY` | — | Opsional, lihat bawah |
+| `SYSTEM_PROMPT` | helpful assistant | Bot personality |
+| `DEFAULT_MODEL` | Llama 3.1 8B | Starting model |
+| `MAX_TOKENS` | 600 | Max answer length |
+| `MAX_TURNS` | 20 | History turns sent to the model |
+| `DAILY_PER_IP` | 60 | Messages/day per IP |
+| `GLOBAL_DAILY_CAP` | 700 | Messages/day across the deployment |
+| `TURNSTILE_SITE_KEY` | — | Optional, see below |
 
-**Turnstile** (opsional): bikin widget di dashboard Cloudflare
-(Turnstile → Add site), isi `TURNSTILE_SITE_KEY`, lalu
-`wrangler secret put TURNSTILE_SECRET`. Tanpa ini app tetap jalan
-dalam mode quota-only. Challenge cukup sekali per 24 jam (session HMAC,
-IP-bound) — user normal hampir tidak pernah lihat captcha.
+**Turnstile** (optional): create a widget in the Cloudflare dashboard
+(Turnstile → Add site), set `TURNSTILE_SITE_KEY`, then
+`wrangler secret put TURNSTILE_SECRET`. Without it the app still runs
+in quota-only mode. The challenge appears at most once per 24h
+(HMAC session, IP-bound) — normal users almost never see a captcha.
 
-## Struktur
+## Structure
 
 ```
-src/worker.js      API + kuota + fallback + Turnstile
-public/            UI vanilla (tanpa build step)
-schema.sql         tabel kuota D1
+src/worker.js      API + quotas + fallback + Turnstile
+public/            vanilla UI (no build step)
+schema.sql         D1 quota tables
 deploy.sh          one-click deploy
-docs/LIMITS.md     dokumentasi batas & kapasitas (jujur)
+docs/LIMITS.md     honest limits & capacity docs
 ```
 
-## Batasan yang perlu kamu tahu
+## Limits you should know
 
-- Kuota 10.000 neurons/hari/akun → ±800 pesan/hari untuk model default.
-  Detail: [docs/LIMITS.md](docs/LIMITS.md).
-- Tiap deployment pakai kuota akun **masing-masing** — template ini tidak
-  menumpang kuota siapa pun.
-- Kamu bertanggung jawab atas pemakaian deployment-mu
-  (baca Acceptable Use Cloudflare).
+- 10,000 neurons/day/account → ~800 messages/day on the default model.
+  Details: [docs/LIMITS.md](docs/LIMITS.md).
+- Each deployment uses **its own** account quota — this template rides on
+  nobody's quota.
+- You are responsible for your own deployment's usage
+  (read Cloudflare's Acceptable Use).
 
-## Lisensi
+## License
 
 MIT.

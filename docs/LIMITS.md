@@ -1,27 +1,29 @@
-# Batas & Kapasitas — jujur, bukan marketing
+# Limits & Capacity — honest, not marketing
 
-Chatbot ini jalan 100% di **paket gratis Cloudflare**. Artinya ada batas
-nyata. Halaman ini menjelaskan semuanya apa adanya.
+> **English** | [Bahasa Indonesia](LIMITS.id.md)
 
-## Workers AI: 10.000 neurons/hari
+This chatbot runs 100% on **Cloudflare's free tier**. That means real
+limits. This page states them plainly.
 
-Sumber: [Workers AI pricing](https://developers.cloudflare.com/workers-ai/platform/pricing/)
-(diakses 2026-10-01). Tanpa kartu kredit. Reset tiap **00:00 UTC**.
-Kalau habis: request gagal (hard stop, tidak ada tagihan dadakan).
+## Workers AI: 10,000 neurons/day
 
-**Neuron bukan token.** Setiap model punya tarif neuron per 1 juta token
-input/output, dan token *output* jauh lebih mahal (±4–8× lipat).
-Itulah kenapa `MAX_TOKENS` dibatasi (default 600).
+Source: [Workers AI pricing](https://developers.cloudflare.com/workers-ai/platform/pricing/)
+(accessed 2026-10-01). No credit card. Resets at **00:00 UTC**.
+When it's gone: requests fail (hard stop, no surprise bill).
 
-## Estimasi pesan/hari per model
+**Neurons are not tokens.** Each model has its own neuron rate per
+1M input/output tokens, and *output* tokens cost far more (±4–8×).
+That's why `MAX_TOKENS` is capped (default 600).
 
-Asumsi: ±500 token input + ±300 token output per pesan (termasuk riwayat).
-Output panjang / riwayat panjang = lebih sedikit pesan. Ini **estimasi**,
-bukan jaminan.
+## Estimated messages/day per model
 
-| Model | Perkiraan pesan/hari |
+Assumes ±500 input + ±300 output tokens per message (history included).
+Longer outputs / longer history = fewer messages. This is an **estimate**,
+not a guarantee.
+
+| Model | Est. messages/day |
 |---|---|
-| Granite 4 Micro (paling hemat) | ~2.600 |
+| Granite 4 Micro (cheapest) | ~2,600 |
 | Llama 3.2 3B | ~870 |
 | Qwen3 30B | ~870 |
 | Llama 3.1 8B (default) | ~800 |
@@ -29,25 +31,25 @@ bukan jaminan.
 | GPT-OSS 20B | ~400 |
 | Llama 4 Scout | ~300 |
 
-## Batas lain paket gratis
+## Other free-tier limits
 
-| Batas | Nilai | Dampak |
+| Limit | Value | Impact |
 |---|---|---|
-| Workers requests | 100.000/hari | langit-langit total |
-| Workers AI | 300 req/menit (text) | burst limiter app: 12/menit/IP |
-| D1 writes | 100.000/hari | 1 write/pesan → aman |
-| KV writes | 1.000/hari | **tidak dipakai** untuk counter (sengaja) |
+| Workers requests | 100,000/day | overall ceiling |
+| Workers AI | 300 req/min (text) | app burst limiter: 12/min/IP |
+| D1 writes | 100,000/day | 1 write/message → fine |
+| KV writes | 1,000/day | **not used** for counters (deliberate) |
 
-## Yang terjadi saat batas tercapai
+## What happens when a limit is hit
 
-- **Kuota per-IP / global habis** → pesan ramah "kuota harian tercapai",
-  bukan error teknis. Reset 00:00 UTC.
-- **Model utama error** → otomatis fallback ke model lain
-  (header `X-Served-By` menunjukkan model yang menjawab).
-- **Semua model gagal** → pesan error jujur, tanpa pura-pura jawab.
+- **Per-IP / global quota exhausted** → friendly "daily quota reached"
+  message, not a technical error. Resets 00:00 UTC.
+- **Primary model fails** → automatic fallback to another model
+  (the `X-Served-By` header shows which model answered).
+- **All models fail** → honest error message, no fake answers.
 
-## Meter pemakaian di aplikasi
+## In-app usage meter
 
-Angka di sidebar adalah **estimasi dari server ini**, bukan angka resmi
-Cloudflare. Ditampilkan supaya user paham kenapa kadang kuota habis —
-bukan supaya dikira aplikasinya rusak.
+The sidebar number is an **estimate from this server**, not official
+Cloudflare figures. It's shown so users understand why quotas sometimes
+run out — not to pretend the app is broken.
