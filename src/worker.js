@@ -116,7 +116,7 @@ async function dailyBump(env, ipHash) {
   }
 }
 
-// ---- Clef abuse pre-filter (prototype) ----
+// ---- Clef AI abuse pre-filter ----
 // Decision model @cf/cloudflare/clef-flash mengklasifikasi pesan user TERAKHIR
 // sebelum neuron LLM dibakar. Fail-open: kalau Clef error/tidak tersedia,
 // request tetap lolos (chatbot tidak mati). Matikan via CLEF_ABUSE_FILTER=off.
