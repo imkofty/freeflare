@@ -28,3 +28,8 @@ CLEF_ABUSE_FILTER = "on"
 # Optional Turnstile (leave empty to run in quota-only mode):
 # TURNSTILE_SITE_KEY = ""
 # Set via: wrangler secret put TURNSTILE_SECRET
+
+[[d1_databases]]
+binding = "DB"
+database_name = "freeflare-quota"
+database_id = "e57a4c15-0613-455c-b6f5-aeba08b1501c"

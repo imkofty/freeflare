@@ -35,7 +35,7 @@ else
   echo "Choose deploy path:"
   echo "  1) Laptop — browser login, NO API token  [default]"
   echo "  2) VPS/headless — use an API token"
-  read -r -p "Choice [1/2]: " PICK
+  read -r -p "Choice [1/2]: " PICK || PICK=""
   case "$PICK" in 2) MODE=token;; *) MODE=oauth;; esac
   echo
 fi
@@ -95,7 +95,7 @@ fi
 # 5. Optional Turnstile (Enter = lewati)
 if ! $W secret list 2>/dev/null | grep -q TURNSTILE_SECRET; then
   echo
-  read -r -p "Turnstile site key (optional, Enter to skip): " TSKEY
+  read -r -p "Turnstile site key (optional, Enter to skip): " TSKEY || TSKEY=""
   if [ -n "$TSKEY" ]; then
     # inject/update var in wrangler.toml
     if grep -q '^TURNSTILE_SITE_KEY' wrangler.toml; then
