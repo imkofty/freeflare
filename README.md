@@ -56,7 +56,9 @@ No D1 (runs in quota-lite mode: burst limiter only), but zero manual steps.
 - **Per-deployment system prompt** — change `SYSTEM_PROMPT` in
   `wrangler.toml`, no code touched (e.g. shop assistant, tutor, …).
 - **Layered anti-abuse**: burst limiter (Cache API, free) + daily per-IP
-  quota + global circuit breaker (D1) + optional Turnstile.
+  quota + global circuit breaker (D1) + optional Turnstile +
+  **Clef AI pre-filter** (classifies jailbreak/spam in ~40ms before any
+  LLM neuron is spent; fail-open).
 - **Honest usage meter** — a clearly-labelled estimate, not official
   Cloudflare numbers. See [docs/LIMITS.md](docs/LIMITS.md).
 
@@ -71,6 +73,7 @@ No D1 (runs in quota-lite mode: burst limiter only), but zero manual steps.
 | `DAILY_PER_IP` | 60 | Messages/day per IP |
 | `GLOBAL_DAILY_CAP` | 700 | Messages/day across the deployment |
 | `TURNSTILE_SITE_KEY` | — | Optional, see below |
+| `CLEF_ABUSE_FILTER` | `on` | AI pre-filter (`@cf/cloudflare/clef-flash`): blocks jailbreak/spam before LLM spend. Fail-open — if the model is unavailable the chat still works. Set `off` to disable. |
 
 **Turnstile** (optional): create a widget in the Cloudflare dashboard
 (Turnstile → Add site), set `TURNSTILE_SITE_KEY`, then
@@ -81,7 +84,7 @@ in quota-only mode. The challenge appears at most once per 24h
 ## Structure
 
 ```
-src/worker.js      API + quotas + fallback + Turnstile
+src/worker.js      API + quotas + fallback + Turnstile + Clef pre-filter
 public/            vanilla UI (no build step)
 schema.sql         D1 quota tables
 deploy.sh          one-click deploy
