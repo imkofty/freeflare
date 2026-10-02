@@ -23,6 +23,8 @@ MAX_MSG_CHARS = "4000"
 BURST_PER_MINUTE = "12"
 DAILY_PER_IP = "60"
 GLOBAL_DAILY_CAP = "700"
+# Clef abuse pre-filter ("on"/"off"; default on, fail-open kalau model tidak tersedia):
+CLEF_ABUSE_FILTER = "on"
 # Optional Turnstile (leave empty to run in quota-only mode):
 # TURNSTILE_SITE_KEY = ""
 # Set via: wrangler secret put TURNSTILE_SECRET
