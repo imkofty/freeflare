@@ -55,9 +55,24 @@ Tanpa D1 (jalan dalam mode quota-lite: burst limiter saja), tapi nol langkah man
 - **System prompt per-deployment** — ubah `SYSTEM_PROMPT` di `wrangler.toml`,
   tanpa sentuh kode (mis. jadi CS toko, tutor, dll).
 - **Anti-abuse berlapis**: burst limiter (Cache API, gratis) + kuota harian
-  per-IP + circuit breaker global (D1) + Turnstile opsional.
+  per-IP + circuit breaker global (D1) + Turnstile opsional +
+  **filter AI Clef** (klasifikasi jailbreak/spam dalam ~40ms sebelum
+  neuron LLM dibakar; fail-open).
 - **Meter pemakaian jujur** — estimasi yang diberi label jelas, bukan angka
   resmi Cloudflare. Lihat [docs/LIMITS.md](docs/LIMITS.md).
+
+### Kenapa filter AI Clef?
+
+**Sebelum:** Satpam FreeFlare cuma bisa *menghitung* — 60 pesan/hari/IP,
+lebih dari itu ditolak. Tapi buta isi: 60x prompt jailbreak tetap diproses
+LLM semua → 10k neuron harian jebol sia-sia.
+
+**Sesudah (Clef):** Satpamnya sekarang bisa *membaca niat*. Setiap pesan dicek
+AI dulu (~40ms): "ini jailbreak/spam bukan?" Kalau ya → ditolak di pintu
+(403), LLM tidak dipanggil, neuron aman. Kalau AI-nya lagi mati → chat tetap
+jalan normal (fail-open).
+
+Intinya: dulu penyerang cuma dihitung, sekarang ditolak di pintu.
 
 ## Konfigurasi (wrangler.toml)
 
@@ -70,6 +85,7 @@ Tanpa D1 (jalan dalam mode quota-lite: burst limiter saja), tapi nol langkah man
 | `DAILY_PER_IP` | 60 | Pesan/hari per IP |
 | `GLOBAL_DAILY_CAP` | 700 | Pesan/hari seluruh deployment |
 | `TURNSTILE_SITE_KEY` | — | Opsional, lihat bawah |
+| `CLEF_ABUSE_FILTER` | `on` | Filter AI (`@cf/cloudflare/clef-flash`): blokir jailbreak/spam sebelum LLM dipakai. Fail-open — kalau model tidak tersedia chat tetap jalan. Isi `off` untuk mematikan. |
 
 **Turnstile** (opsional): bikin widget di dashboard Cloudflare
 (Turnstile → Add site), isi `TURNSTILE_SITE_KEY`, lalu
@@ -80,7 +96,7 @@ IP-bound) — user normal hampir tidak pernah lihat captcha.
 ## Struktur
 
 ```
-src/worker.js      API + kuota + fallback + Turnstile
+src/worker.js      API + kuota + fallback + Turnstile + filter Clef
 public/            UI vanilla (tanpa build step)
 schema.sql         tabel kuota D1
 deploy.sh          one-click deploy

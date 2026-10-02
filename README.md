@@ -62,6 +62,19 @@ No D1 (runs in quota-lite mode: burst limiter only), but zero manual steps.
 - **Honest usage meter** — a clearly-labelled estimate, not official
   Cloudflare numbers. See [docs/LIMITS.md](docs/LIMITS.md).
 
+### Why the Clef AI filter?
+
+**Before:** FreeFlare's guard could only *count* — 60 messages/day/IP,
+anything more got rejected. But it was blind to content: 60 jailbreak prompts
+would all get processed by the LLM → 10k daily neurons burned for nothing.
+
+**After (Clef):** The guard can now *read intent*. Every message is AI-checked
+first (~40ms): "is this jailbreak/spam?" If yes → rejected at the door (403),
+the LLM is never called, neurons stay safe. If the filter itself is down →
+chat keeps working normally (fail-open).
+
+In short: before, attackers were merely counted. Now they're stopped at the door.
+
 ## Configuration (wrangler.toml)
 
 | Var | Default | Meaning |
